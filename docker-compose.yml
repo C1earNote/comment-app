@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: comment_db
+    restart: always
+    environment:
+      POSTGRES_DB: comments
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Tnigam.com@1
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./comment-backend
+    container_name: comment_backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: DATABASE_URL=postgres://postgres:Tnigam.com%401@db:5432/comments
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    command: npm run start:dev
+
+volumes:
+  pgdata:
