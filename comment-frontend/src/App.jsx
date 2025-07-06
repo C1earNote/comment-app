@@ -232,7 +232,9 @@ function App() {
               <button onClick={() => setEditingId(null)}>Cancel</button>
             </>
           ) : (
-            <span style={{ fontSize: 16 }}>{comment.content}</span>
+            <span style={{ fontSize: 16, fontStyle: comment.deleted ? 'italic' : 'normal', color: comment.deleted ? '#888' : undefined }}>
+              {comment.deleted ? '[comment deleted]' : comment.content}
+            </span>
           )}
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
