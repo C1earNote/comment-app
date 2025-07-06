@@ -5,7 +5,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: '*', // for development only — allows all origins
+    origin: '*', // I have made this so used all origin for development only
     credentials: true,
   });
 

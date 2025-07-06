@@ -22,7 +22,7 @@ export class AuthService {
   async login(username: string, password: string) {
     const user = await this.userRepo.findOne({
       where: { username },
-      select: ['id', 'username', 'password'], // explicitly select password
+      select: ['id', 'username', 'password'], 
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {

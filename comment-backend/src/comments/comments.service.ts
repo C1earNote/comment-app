@@ -49,13 +49,11 @@ export class CommentsService {
   }
 
   async findThread(parentId?: number) {
-    // Fetch all comments (optionally filter by parentId)
     const allComments = await this.commentRepo.find({
       relations: ['user', 'parent'],
       order: { createdAt: 'ASC' },
     });
 
-    // Helper to build nested tree
     function buildTree(comments, parentId: number | null) {
       return comments
         .filter(c => (c.parent ? c.parent.id : null) === parentId)
@@ -82,10 +80,8 @@ export class CommentsService {
     }
 
     if (typeof parentId === 'number') {
-      // Find the parent comment and nest its children
       return buildTree(allComments, parentId as number | null);
     } else {
-      // Root comments (no parent)
       return buildTree(allComments, null);
     }
   }
