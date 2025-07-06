@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { Comment } from '../comments/comment.entity';
 
 @Entity()
@@ -7,10 +13,13 @@ export class User {
   id: number;
 
   @Column({ unique: true })
-  email: string;
+  username: string;
 
   @Column()
   password: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @OneToMany(() => Comment, comment => comment.user)
   comments: Comment[];

@@ -1,0 +1,28 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f9f9f9;
+}
+h1 {
+  text-align: center;
+}
+input, textarea {
+  display: block;
+  margin: 10px 0;
+  padding: 8px;
+  width: 300px;
+}
+button {
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+#comments {
+  margin-top: 20px;
+}
+.comment {
+  background: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}

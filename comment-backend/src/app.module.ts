@@ -8,13 +8,13 @@ import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // Load .env variables globally
+    ConfigModule.forRoot({ isGlobal: true }), // Reads from .env
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL, // pulled from .env file
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: true, // Set to false in production
+      synchronize: true, // Disable in production
     }),
 
     EventEmitterModule.forRoot(),

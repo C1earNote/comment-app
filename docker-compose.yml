@@ -21,7 +21,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: DATABASE_URL=postgres://postgres:Tnigam.com%401@db:5432/comments
+      DATABASE_URL: postgres://postgres:Tnigam.com%401@db:5432/comments
+      JWT_SECRET: Tnigam.com@1
     depends_on:
       - db
     volumes:
