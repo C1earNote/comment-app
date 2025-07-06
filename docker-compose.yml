@@ -16,3 +16,12 @@ services:
     dns:
       - 8.8.8.8
       - 8.8.4.4
+
+  frontend:
+    build:
+      context: ./comment-frontend
+    container_name: comment_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
