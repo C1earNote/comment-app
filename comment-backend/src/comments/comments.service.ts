@@ -13,10 +13,18 @@ export class CommentsService {
   ) {}
 
   async create(userId: number, content: string, parentId?: number) {
+    let parentComment: Comment | undefined = undefined;
+    if (parentId) {
+      const foundParent = await this.commentRepo.findOne({ where: { id: parentId } });
+      if (!foundParent) {
+        throw new NotFoundException('Parent comment not found');
+      }
+      parentComment = foundParent;
+    }
     const comment = this.commentRepo.create({
       content,
       user: { id: userId } as any,
-      parent: parentId ? ({ id: parentId } as any) : undefined,
+      parent: parentComment,
     });
 
     const saved = await this.commentRepo.save(comment);
@@ -41,13 +49,45 @@ export class CommentsService {
   }
 
   async findThread(parentId?: number) {
-    return this.commentRepo.find({
-      where: parentId
-        ? { parent: { id: parentId } }
-        : { parent: IsNull() },
-      relations: ['children', 'user'],
+    // Fetch all comments (optionally filter by parentId)
+    const allComments = await this.commentRepo.find({
+      relations: ['user', 'parent'],
       order: { createdAt: 'ASC' },
     });
+
+    // Helper to build nested tree
+    function buildTree(comments, parentId: number | null) {
+      return comments
+        .filter(c => (c.parent ? c.parent.id : null) === parentId)
+        .map(comment => {
+          // Recursively build children
+          const children = buildTree(comments, comment.id);
+          return {
+            id: comment.id,
+            content: comment.content,
+            user: {
+              id: comment.user?.id ?? null,
+              username: comment.user?.username ?? 'Unknown',
+              createdAt: comment.user?.createdAt ?? null,
+            },
+            parent: comment.parent ? { id: comment.parent.id } : null,
+            children,
+            deleted: comment.deleted,
+            deletedAt: comment.deletedAt,
+            createdAt: comment.createdAt,
+            updatedAt: comment.updatedAt,
+            replyingToId: comment.parent?.id ?? null,
+          };
+        });
+    }
+
+    if (typeof parentId === 'number') {
+      // Find the parent comment and nest its children
+      return buildTree(allComments, parentId as number | null);
+    } else {
+      // Root comments (no parent)
+      return buildTree(allComments, null);
+    }
   }
 
   async edit(userId: number, commentId: number, newContent: string) {
@@ -95,7 +135,7 @@ export class CommentsService {
       throw new ForbiddenException('Not your comment');
 
     if (!comment.deletedAt)
-      throw new ForbiddenException('Restore time expired');
+      throw new NotFoundException('Comment not found or not deleted');
 
     const now = new Date();
     const diff = (now.getTime() - comment.deletedAt.getTime()) / 1000;

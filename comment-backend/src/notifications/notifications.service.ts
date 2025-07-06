@@ -26,11 +26,18 @@ export class NotificationsService {
   }
 
   async findUserNotifications(userId: number) {
-    return this.notificationRepo.find({
+    const notifications = await this.notificationRepo.find({
       where: { toUser: { id: userId } },
       order: { createdAt: 'DESC' },
       relations: ['fromUser'],
     });
+    return notifications.map(n => ({
+      id: n.id,
+      fromUsername: n.fromUser?.username || 'Unknown',
+      replyToCommentId: n.commentId,
+      read: n.read,
+      createdAt: n.createdAt,
+    }));
   }
 
   async markAsRead(id: number) {
