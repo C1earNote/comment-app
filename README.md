@@ -130,7 +130,7 @@ npm start
 ---
 
 ## Author
-- [Your Name](https://github.com/C1earNote)
+- [Tanishq Nigam](https://github.com/C1earNote)
 
 ---
 
